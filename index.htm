@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiroshima Business & Life Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 広島をイメージした、もみじ＆瀬戸内レモン系のふんわりカラー */
+            --bg-main: #fdfaf8;
+            --surface: #ffffff;
+            --navy: #d23023;        /* もみじレッド（メインカラー） */
+            --gold: #e6b422;        /* 瀬戸内レモンイエロー */
+            --miso: #8c603a;        /* お好みソースブラウン */
+            --text-main: #4a3f35;   /* 優しいダークブラウン */
+            --text-muted: #8f857d;
+            --border: #f5ebe6;
+            --shadow: 0 8px 24px rgba(210, 48, 35, 0.15);
+            --radius: 16px;         /* ふんわりした角丸 */
+        }
+
+        /* ===== DARK MODE ===== */
+        body.dark-mode {
+            --bg-main: #2d2825;
+            --surface: #3a332f;
+            --navy: #e85a4f;
+            --gold: #ebd588;
+            --miso: #d4af94;
+            --text-main: #fdfdfd;
+            --text-muted: #b8b2ad;
+            --border: #524a45;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(135deg, #ffdfd9 0%, #ffc4b3 100%);
+            color: #4a3f35;
+            padding: 24px 20px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 3px solid #ffffff;
+        }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            line-height: 1.3;
+        }
+        .header-sub {
+            font-size: 0.8rem;
+            color: #8a6c56;
+            margin-top: 6px;
+            letter-spacing: 0.1em;
+        }
+        .date-time {
+            background: rgba(255,255,255,0.6);
+            border-radius: 4px;
+            padding: 6px 14px;
+            display: inline-block;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            border: 1px solid rgba(255,255,255,0.8);
+            color: #5a4a42;
+            font-weight: 500;
+        }
+        .theme-toggle-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.8);
+            color: #5a4a42;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* ===== NAV TABS ===== */
+        .nav-tabs {
+            display: flex;
+            overflow-x: auto;
+            background: var(--surface);
+            padding: 0 10px;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 14px 16px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            color: var(--navy);
+            border-bottom-color: var(--navy);
+            font-weight: 700;
+        }
+
+        /* ===== SECTIONS & CARDS ===== */
+        .section { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+        .section.active { display: block; }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            animation: fadeUp 0.3s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--miso);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px dashed var(--bg-main);
+            padding-bottom: 8px;
+        }
+
+        /* ===== BUTTONS & INPUTS ===== */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:active { opacity: 0.8; }
+        
+        .map-action-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-sm {
+            flex: 1;
+            padding: 8px 4px;
+            background: transparent;
+            border: 1px solid var(--navy);
+            color: var(--navy);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-sm:hover {
+            background: var(--navy);
+            color: white;
+        }
+        body.dark-mode .btn-sm {
+            border-color: var(--navy);
+            color: var(--navy);
+        }
+        body.dark-mode .btn-sm:hover {
+            background: var(--navy);
+            color: var(--bg-main);
+        }
+
+        .search-input {
+            flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 4px;
+            font-size: 0.85rem; background: var(--bg-main); color: var(--text-main); outline: none;
+        }
+        .search-input:focus { border-color: var(--gold); }
+        .search-go {
+            padding: 10px 16px; background: var(--gold); color: white; border: none;
+            border-radius: 4px; font-size: 0.85rem; cursor: pointer; font-weight: 600;
+        }
+
+        .quick-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .qbtn {
+            padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface);
+            font-size: 0.8rem; cursor: pointer; font-weight: 500; color: var(--text-main); text-align: left;
+        }
+        .qbtn:hover { background: var(--bg-main); }
+        .qbtn-strong { border-left: 3px solid var(--navy); }
+
+        /* ===== MAP ===== */
+        iframe.map-frame {
+            width: 100%; height: 240px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-main);
+        }
+
+        /* ===== LISTS & TIPS ===== */
+        .tip-item {
+            background: var(--bg-main); border-radius: 8px; padding: 12px; margin-bottom: 8px; 
+            font-size: 0.85rem; line-height: 1.6; border-left: 3px solid var(--navy);
+        }
+        .tip-item strong { color: var(--miso); display: block; margin-bottom: 4px;}
+        .tip-item a { color: var(--gold); font-weight: 500; text-decoration: none; }
+        .tip-item a:hover { text-decoration: underline; }
+
+        /* ===== DIARY & TODO ===== */
+        .diary-textarea {
+            width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border);
+            border-radius: 8px; font-size: 0.85rem; line-height: 1.6; background: var(--bg-main);
+            color: var(--text-main); outline: none; resize: vertical; margin-bottom: 12px;
+        }
+        .diary-textarea:focus { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(210,48,35,0.2); }
+        
+        .ai-response {
+            display: none; margin-top: 16px; padding: 16px; background: #fff5f5; 
+            border: 1px solid #f5ebe6; border-radius: 8px; border-left: 4px solid var(--navy);
+        }
+        body.dark-mode .ai-response { background: #4a3030; border-color: #524a45; }
+
+        .todo-item {
+            display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed var(--border); padding: 8px 0; font-size: 0.85rem;
+        }
+        .todo-item.completed span.task-text {
+            text-decoration: line-through; color: var(--text-muted);
+        }
+        .todo-actions {
+            margin-left: auto; display: flex; gap: 4px;
+        }
+        .todo-btn {
+            background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font-size: 0.75rem; cursor: pointer; color: var(--text-muted);
+        }
+        .todo-btn:hover { background: var(--bg-main); color: var(--navy); border-color: var(--navy); }
+
+        /* ===== CALCULATOR ===== */
+        .calc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .calc-input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--bg-main); color: var(--text-main); text-align: right; }
+        
+        footer { text-align: center; padding: 30px 20px; font-size: 0.75rem; color: var(--text-muted); border-top: 1px dashed var(--border); margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <button class="theme-toggle-btn" onclick="document.body.classList.toggle('dark-mode')">画面切替</button>
+    <div class="header-title">Hiroshima Daily & Business</div>
+    <div class="header-sub">お仕事もプライベートも、ぶちええ毎日になるようサポートするけえね</div>
+    <div class="date-time" id="dt"></div>
+</header>
+
+<nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('home')">🏠 ホームじゃ</button>
+    <button class="tab-btn" onclick="switchTab('map')">📍 検索・マップ</button>
+    <button class="tab-btn" onclick="switchTab('food')">🍽️ 広島グルメ</button>
+    <button class="tab-btn" onclick="switchTab('diary')">📔 業務・日常日記</button>
+    <button class="tab-btn" onclick="switchTab('calc')">🧮 経費・計算</button>
+    <button class="tab-btn" onclick="switchTab('phrase')">🗣️ リアル広島弁</button>
+    <button class="tab-btn" onclick="switchTab('transport')">🚇 交通・車・自転車</button>
+    <button class="tab-btn" onclick="switchTab('tips')">📋 ローカルルール</button>
+    <button class="tab-btn" onclick="switchTab('sales')">🚗 広島営業道</button>
+</nav>
+
+<div class="section active" id="sec-home">
+    <div class="card">
+        <div class="card-title">🌤️ 今日の広島のお天気じゃ</div>
+        <div id="weather-content">
+            <div style="text-align:center; color:var(--text-muted); padding:20px; font-size:0.85rem;">⏳ 天気情報を取得しとるけえ...ちょっと待っとってね</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📰 ビジネス・ニュース情報をチェックしてね</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+            <button class="qbtn qbtn-strong" onclick="window.open('https://www.nikkei.com/','_blank')">
+                <div style="font-weight:700;">日本経済新聞</div><div style="font-size:0.7rem; color:var(--text-muted);">ビジネスニュースの確認じゃ</div>
+            </button>
+            <button class="qbtn qbtn-strong" style="border-left-color: #ef4444;" onclick="window.open('https://finance.yahoo.co.jp/','_blank')">
+                <div style="font-weight:700;">Yahoo!ファイナンス</div><div style="font-size:0.7rem; color:var(--text-muted);">株価・企業業績のチェックじゃ</div>
+            </button>
+            <button class="qbtn qbtn-strong" style="border-left-color: #3b82f6;" onclick="window.open('https://www.nhk.or.jp/hiroshima/','_blank')">
+                <div style="font-weight:700;">NHK 広島放送局WEB</div><div style="font-size:0.7rem; color:var(--text-muted);">広島のローカルニュース・気象情報じゃけえ</div>
+            </button>
+            <button class="qbtn qbtn-strong" style="border-left-color: #f59e0b;" onclick="window.open('https://www.chugoku-np.co.jp/','_blank')">
+                <div style="font-weight:700;">中国新聞デジタル</div><div style="font-size:0.7rem; color:var(--text-muted);">地元密着の情報とカープ情報ならここじゃね</div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-map">
+    <div class="card">
+        <div class="card-title">📍 現在地周辺・ルート検索じゃ</div>
+        <button class="btn-primary" onclick="initMap()" style="margin-bottom:10px;">📡 現在地を取得してマップ表示するけえ</button>
+        <div id="map-status" style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center;">ボタンを押すと現在地周辺を表示するよ</div>
+        <!-- 初期位置は広島駅周辺 -->
+        <iframe id="map-frame" class="map-frame" src="https://maps.google.co.jp/maps?q=広島駅&output=embed" allowfullscreen loading="lazy"></iframe>
+        
+        <div style="margin-top:16px;">
+            <div style="font-size:0.85rem; font-weight:600; margin-bottom:8px;">目的地へのルートを調べるんよ</div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="route-dest" class="search-input" placeholder="例：紙屋町シャレオ、客先名">
+                <button class="search-go" onclick="routeTo('route-dest')">検索</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🔍 周辺のサクッと検索 <a href="https://maps.google.co.jp/" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[Google Mapsを開く]</a></div>
+        <div class="quick-btns">
+            <button class="qbtn" onclick="searchNearby('お好み焼き')">🍳 お好み焼き</button>
+            <button class="qbtn" onclick="searchNearby('もみじ饅頭')">🍁 もみじ饅頭・土産</button>
+            <button class="qbtn" onclick="searchNearby('レンタサイクル ぴーすくる')">🚲 レンタサイクル</button>
+            <button class="qbtn" onclick="searchNearby('コンビニ')">🏪 近くのコンビニ</button>
+            <button class="qbtn" onclick="searchNearby('個室 接待 ランチ')">🥗 個室ランチ・接待</button>
+            <button class="qbtn" onclick="searchNearby('コインパーキング')">🅿️ 駐車場を探すけえ</button>
+            <button class="qbtn" onclick="searchNearby('ドラッグストア ウォンツ')">💄 ドラッグストア</button>
+            <button class="qbtn" onclick="searchNearby('もみじ銀行 広島銀行 ATM')">🏧 銀行・ATM</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🏯 休日のおすすめ！ぶちええ観光スポット</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">広島市内からちょっと足を伸ばせる場所まで、たっぷり紹介するけえね！</div>
+        
+        <div class="tip-item">
+            <strong>🕊️ 平和記念公園 ＆ 原爆ドーム</strong>
+            広島市の中心に位置する世界遺産。緑豊かで川沿いの散歩コースとしても心が落ち着く場所じゃけえ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('広島 平和記念公園')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('広島 平和記念公園')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>⛩️ 宮島 ＆ 厳島神社</strong>
+            フェリーで約10分。海に浮かぶ大鳥居は圧巻！焼き牡蠣や揚げもみじを食べ歩きしながら、鹿と戯れるのが最高なんよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('広島 厳島神社')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('広島 宮島口駅')">🚶‍♀️ 宮島口まで</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🌳 縮景園（しゅっけいえん）</strong>
+            四季折々の花が楽しめる大名庭園。市内のど真ん中にあるのに、ここだけ静寂に包まれとって都会のオアシスじゃね。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('広島 縮景園')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('広島 縮景園')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🏯 広島城（鯉城）</strong>
+            毛利輝元が築いたお城。敷地内をのんびり歩くだけでもリフレッシュできるし、歴史好きにはたまらんスポットよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('広島城')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('広島城')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>⚾ MAZDA Zoom-Zoom スタジアム広島</strong>
+            カープの本拠地！試合がない日でもグッズショップ（C-garden）に入れたり、スタジアム周辺の赤い熱気を感じられるけえ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('マツダスタジアム')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('マツダスタジアム')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🗼 おりづるタワー</strong>
+            原爆ドームのすぐ隣。屋上展望台「ひろしまの丘」からの眺めは抜群！風を感じながらカフェで一息つけるオシャレな空間じゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('おりづるタワー')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('おりづるタワー')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🛍️ 本通（ほんどおり）商店街</strong>
+            広島の買い物の中心！西日本最大級のアーケード街で、ファッション、雑貨、カフェまで何でも揃うわ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('広島 本通商店街')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('広島 本通商店街')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>⚓ 呉・大和ミュージアム</strong>
+            戦艦「大和」の10分の1模型は鳥肌もの。すぐ向かいにある「てつのくじら館」では本物の潜水艦の中に入れるんよ！車や電車で小旅行にぴったりじゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('大和ミュージアム')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('大和ミュージアム')">🚗 ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🛍️ THE OUTLETS HIROSHIMA</strong>
+            佐伯区にある巨大アウトレットモール。映画館やスケートリンクもあって、週末に車で買い出しや気分転換に行くのに最高じゃね。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('ジ アウトレット広島')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('ジ アウトレット広島')">🚗 ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🐈 尾道・千光寺（おのみち）</strong>
+            坂道と猫と映画の街。ロープウェイで登って、瀬戸内海の絶景を見下ろす景色は本当に癒やされるけえ、少し足を伸ばしてみてね。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('尾道 千光寺')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('尾道 千光寺')">🚗 ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🏮 竹原（たけはら）町並み保存地区</strong>
+            「安芸の小京都」と呼ばれる古い町並みが残るエリア。マッサンで有名になった竹鶴酒造もあって、大人の休日散策にぴったりじゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('竹原 町並み保存地区')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('竹原 町並み保存地区')">🚗 ルート</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🐟 みやじマリン（宮島水族館）</strong>
+            スナメリがトレードマーク。牡蠣いかだを再現した水槽など、瀬戸内海ならではの展示が多くて大人でもぶち楽しめるんよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="openMapSpot('宮島水族館')">🗺️ マップ</button>
+                <button class="btn-sm" onclick="routeToSpot('宮島水族館')">🚶‍♀️ ルート</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-food">
+    <div class="card">
+        <div class="card-title">🍽️ ぶちうまい！絶対食べたい広島グルメ <a href="https://dive-hiroshima.com/gourmet/" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[広島観光公式]</a></div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">サクッと一人でカウンターに入れるお店から、同僚と行きたい名店までてんこ盛りじゃ！</div>
+        
+        <div class="tip-item">
+            <strong>🍳 広島お好み焼き</strong>
+            絶対に「広島焼き」と言ってはいけんよ！キャベツの甘みと豚肉、麺の層がたまらん。みっちゃん、麗ちゃん、八昌などが定番。カウンターの鉄板から直接コテで食べるのが通じゃけえ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('お好み焼き', 'current')">📍 現在地の周辺</button>
+                <button class="btn-sm" onclick="searchFoodMap('お好み焼き', 'hiroshima')">🚉 広島駅周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🥩 コウネ（牛の肩バラ肉）</strong>
+            広島の焼肉や鉄板焼きの定番じゃ！薄切りで脂が乗っとって、サッと焼いてネギ塩レモンで食べると最高じゃけえ。ビールにぶち合うんよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('コウネ 焼肉', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍜 汁なし担々麺</strong>
+            山椒のシビレ（麻）とラー油の辛さ（辣）がクセになる！食べる前に30回以上混ぜるのが鉄則。「くにまつ」や「キング軒」が有名。これもカウンターで黙々と食べるのに最適じゃね。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('汁なし担々麺', 'current')">📍 現在地の周辺</button>
+                <button class="btn-sm" onclick="searchFoodMap('汁なし担々麺', 'hiroshima')">🚉 広島駅周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍙 むすびのむさし</strong>
+            広島県民のソウルフード！スポーツ観戦や行楽の定番「若鶏むすび」は絶品じゃ。出汁の効いたうどんと一緒に、冷めても美味しいおにぎりをほおばってね。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('むすびのむさし', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🦪 牡蠣（かき）料理</strong>
+            冬が旬じゃけど、一年中美味しく食べられる店もあるよ。生ガキ、カキフライ、焼きガキ、そして牡蠣の土手鍋！宮島の「牡蠣屋」もおすすめじゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('牡蠣料理', 'current')">📍 現在地の周辺</button>
+                <button class="btn-sm" onclick="searchFoodMap('牡蠣料理', 'hiroshima')">🚉 広島駅周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍜 広島ラーメン（中華そば）</strong>
+            豚骨醤油ベースの優しい味わい。一人でサクッと入れるカウンター中心の老舗（「陽気」や「すずめ」など）が多くて、こだわりの味を探求するのにぴったりじゃけえ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('広島ラーメン 中華そば', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍜 呉冷麺</strong>
+            平打ち麺に甘酸っぱいタレが絡む呉市のご当地グルメ。「珍来軒」が発祥で、途中で特製の「酢辛子」を入れて味変するのが通の食べ方じゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('呉冷麺', 'none')">⚓ 呉市周辺で探す</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍜 広島つけ麺</strong>
+            冷たくて激辛のつけダレに、冷水で締めたストレート麺、茹でキャベツをたっぷり絡めて食べるヘルシーな一杯。「ばくだん屋」や「冷めん家」が定番。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('広島つけ麺', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🥬 広島菜漬（ひろしまなづけ）</strong>
+            野沢菜、高菜と並ぶ日本三大漬物の一つじゃ。シャキシャキの歯ごたえとピリッとした辛味がご飯にぶち合うんよ。お土産にも最適じゃね。
+        </div>
+        <div class="tip-item">
+            <strong>🍳 府中焼き</strong>
+            広島県府中市のご当地お好み焼き。豚バラ肉の代わりに「ミンチ（挽き肉）」を使い、脂で外の麺がカリカリに焼き上がるのが特徴じゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('府中焼き', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍱 あなごめし</strong>
+            特製のタレでふっくら香ばしく焼き上げた穴子をご飯の上に敷き詰めた絶品。宮島口の「うえの」のお弁当は、冷めてもぶちうまいんよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('あなごめし', 'current')">📍 現在地の周辺</button>
+                <button class="btn-sm" onclick="searchFoodMap('あなごめし 宮島口', 'none')">🚉 宮島口周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍢 ホルモン天ぷら</strong>
+            西区周辺（福島町など）のB級グルメ。揚げたてのホルモンを自分で包丁とまな板を使って切りながら、酢醤油と唐辛子で食べるワイルドなグルメなんよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('ホルモン天ぷら', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🥩 ウニホーレン</strong>
+            ほうれん草のバターソテーに新鮮なウニをたっぷり乗せた、ちょっと贅沢な鉄板焼きメニュー。バゲットに乗せて食べると最高じゃ！
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('ウニホーレン', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🐟 小鰯（こいわし）料理</strong>
+            「7回洗えば鯛の味」と言われる小鰯。生姜醤油で食べる刺身や、サクサクの天ぷらが最高。初夏から夏にかけての広島の居酒屋の定番じゃけえ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('小鰯 居酒屋', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍺 せんじがら（せんじ肉）</strong>
+            豚の胃袋（ホルモン）をカリカリになるまで揚げて塩コショウで味付けした珍味。噛めば噛むほど味が出て、ビールが止まらんくなる悪魔の食べ物じゃ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('せんじがら', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍋 広島レモン・瀬戸内スイーツ</strong>
+            生産量日本一のレモンを使ったスイーツ。「レモンケーキ」はお土産の定番で、最近は生レモンサワーやレモン鍋も大人気じゃけえ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('レモンケーキ スイーツ', 'hiroshima')">🚉 広島駅周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍞 八天堂のくりーむパン</strong>
+            三原市発祥。スイーツのようにとろけるクリームがたっぷりで、手土産にもぶち喜ばれるんよ。広島駅や空港でも買えるけえね。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('八天堂', 'hiroshima')">🚉 広島駅周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍁 もみじ饅頭 ＆ 揚げもみじ</strong>
+            こしあんだけじゃなく、チーズやチョコなど種類が豊富。宮島に行ったら、外側サクサク中アツアツの「揚げもみじ」は絶対に食べて帰ってね！
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('もみじ饅頭', 'current')">📍 現在地の周辺</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍛 呉海自カレー</strong>
+            海上自衛隊の各艦艇で食べられているレシピを忠実に再現したカレー。呉市内のいろんなお店で提供されとって、食べ比べが楽しいんよ。
+            <div class="map-action-btns">
+                <button class="btn-sm" onclick="searchFoodMap('呉海自カレー', 'none')">⚓ 呉市周辺で探す</button>
+            </div>
+        </div>
+        <div class="tip-item">
+            <strong>🍜 尾道ラーメン</strong>
+            豚の背脂が浮いた醤油ベースのスープに平打ち麺が特徴。広島市内のラーメンとはまた違う魅力があるけえ、尾道に行ったら絶対食べてね。
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-diary">
+    <div class="card">
+        <div class="card-title">🤖 AI アシスタント（1日の振り返り）</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">今日の出来事を入力してみてね。AIが優しく丁寧な広島弁で、労いのフィードバックをするけえ💐</div>
+        
+        <div style="margin-bottom:12px;">
+            <div style="font-size:0.85rem; font-weight:600; color:var(--navy); margin-bottom:6px;">✨ よかったこと（成果・進捗・嬉しかったこと）</div>
+            <textarea class="diary-textarea" id="ai-good-input" placeholder="例：
+・基幹システム刷新に向けたベンダーとの定例会議がスムーズに進んだ！
+・夕食にこだわりのラーメンが作れて大満足じゃ"></textarea>
+        </div>
+        
+        <div style="margin-bottom:12px;">
+            <div style="font-size:0.85rem; font-weight:600; color:var(--miso); margin-bottom:6px;">課題（もやもやしたこと・ストレス・改善点）</div>
+            <textarea class="diary-textarea" id="ai-bad-input" placeholder="例：
+・部門の予算調整がなかなかまとまらなくてたいぎいんよ
+・広電が混んどって座れんくて、えらかった..."></textarea>
+        </div>
+        
+        <button class="btn-primary" id="ai-submit-btn" onclick="submitToAI()">送信してAIからお返事をもらう💌</button>
+        
+        <div id="ai-response-area" class="ai-response">
+            <div style="font-size:0.85rem; font-weight:700; color:var(--navy); margin-bottom:6px;">🤖 AIからのお返事じゃ</div>
+            <div id="ai-response-text" style="font-size:0.85rem; line-height:1.7;"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">✅ マイタスク・目標リストじゃ</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">ブラウザに保存されるけえ、自分だけのToDoリストとして自由に使ってね。</div>
+        
+        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+            <input type="text" id="todo-input" class="search-input" placeholder="新しいタスクを入力" style="flex: 1; min-width:150px;">
+            <input type="date" id="todo-date" class="search-input" style="width:130px;">
+            <button class="search-go" onclick="addTodo()">追加</button>
+        </div>
+        
+        <div id="todo-list">
+            <!-- JSで動的に追加されます -->
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-calc">
+    <div class="card">
+        <div class="card-title">🍻 割り勘の計算するけえ</div>
+        <div class="calc-row">
+            <label style="width:70px; font-size:0.85rem;">合計金額</label>
+            <input type="number" id="split-total" class="calc-input" placeholder="例: 15000" oninput="calcSplit()">
+            <span style="font-size:0.85rem;">円</span>
+        </div>
+        <div class="calc-row">
+            <label style="width:70px; font-size:0.85rem;">人数</label>
+            <input type="number" id="split-people" class="calc-input" placeholder="例: 3" oninput="calcSplit()">
+            <span style="font-size:0.85rem;">人</span>
+        </div>
+        <div style="text-align:right; font-size:1.1rem; font-weight:700; color:var(--navy); margin-top:12px;">
+            1人あたり：<span id="split-result">0</span> 円じゃ
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🧾 消費税・税込の計算じゃ <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6303.htm" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[国税庁WEB]</a></div>
+        <div class="calc-row">
+            <label style="width:70px; font-size:0.85rem;">税抜金額</label>
+            <input type="number" id="tax-base" class="calc-input" placeholder="0" oninput="calcTax()">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:10px;">
+            <label style="font-size:0.8rem;"><input type="radio" name="tax-rate" value="1.1" checked onchange="calcTax()"> 10%</label>
+            <label style="font-size:0.8rem;"><input type="radio" name="tax-rate" value="1.08" onchange="calcTax()"> 8% (軽減)</label>
+        </div>
+        <div style="text-align:right; font-size:1.1rem; font-weight:700; color:var(--miso);">
+            税込：<span id="tax-result">0</span> 円じゃ
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-title">⛽ 交通費・ガソリン代の目安計算</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">週末のドライブや出張前のガソリン代の目安を計算するんよ。</div>
+        <div class="calc-row">
+            <label style="width:70px; font-size:0.85rem;">走行距離</label>
+            <input type="number" id="fuel-dist" class="calc-input" placeholder="例: 100" oninput="calcFuel()">
+            <span style="font-size:0.85rem;">km</span>
+        </div>
+        <div class="calc-row">
+            <label style="width:70px; font-size:0.85rem;">燃費</label>
+            <input type="number" id="fuel-eff" class="calc-input" placeholder="例: 15" oninput="calcFuel()">
+            <span style="font-size:0.85rem;">km/L</span>
+        </div>
+        <div class="calc-row">
+            <label style="width:70px; font-size:0.85rem;">単価</label>
+            <input type="number" id="fuel-price" class="calc-input" placeholder="例: 170" oninput="calcFuel()">
+            <span style="font-size:0.85rem;">円/L</span>
+        </div>
+        <div style="text-align:right; font-size:1.1rem; font-weight:700; color:var(--navy); margin-top:12px;">
+            目安：<span id="fuel-result">0</span> 円じゃ
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-phrase">
+    <div class="card">
+        <div class="card-title">🗣️ リアルな広島弁辞典（アイスブレイク用） <a href="https://ja.wikipedia.org/wiki/%E5%BA%83%E5%B3%B6%E5%BC%81" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[広島弁辞典]</a></div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">任侠映画みたいなドギツイ言葉は日常じゃあまり使わんけえ安心してね。ビジネスや日常で自然にポロッと出る方言を集めたよ。</div>
+        
+        <div class="tip-item"><strong>じゃけえ / じゃけん</strong>意味：「だから」。広島弁の基本中の基本。「雨じゃけえ傘持っていきんさい」</div>
+        <div class="tip-item"><strong>ぶち / ばり / ぶり</strong>意味：「とても」「すごく」。「これ、ぶち美味いね！」「ばりウケる」</div>
+        <div class="tip-item"><strong>たいぎい</strong>意味：「面倒くさい」「おっくうだ」「しんどい」。「今日の会議、たいぎいね〜」</div>
+        <div class="tip-item"><strong>たちまち</strong>意味：「とりあえず」「まずは」。居酒屋の第一声は「たちまち生ビールで！」</div>
+        <div class="tip-item"><strong>はぶてる</strong>意味：「ふてくされる」「すねる」。「そんなことですぐ、はぶてんさんなや」</div>
+        <div class="tip-item"><strong>えらい</strong>意味：「疲れた」「しんどい」。西日本全体で使われる。「歩きすぎてえらいわ」</div>
+        <div class="tip-item"><strong>みやすい</strong>意味：「簡単だ」「容易だ」（見やすいという意味ではない）。「この作業、みやすいね」</div>
+        <div class="tip-item"><strong>たう / たわん</strong>意味：「届く / 届かない」。「棚の上の荷物、たう？」「ううん、たわん」</div>
+        <div class="tip-item"><strong>さばる</strong>意味：「引っ張る」「邪魔になる」。「そのコード、さばるけえどかして」</div>
+        <div class="tip-item"><strong>いたしい</strong>意味：「難しい」「困難だ」。「この設定、ちいといたしいね」</div>
+        <div class="tip-item"><strong>すいばり</strong>意味：「（木の）トゲ」。「指にすいばりが刺さって痛いんよ」</div>
+        <div class="tip-item"><strong>にがる</strong>意味：「鈍く痛む」。お腹が痛い時に「お腹がにがる」と言うんよ。</div>
+        <div class="tip-item"><strong>みてる</strong>意味：「なくなる」「減る」（満ちるの逆）。「醤油がみてたけえ買ってきて」</div>
+        <div class="tip-item"><strong>げる</strong>意味：「持ち上げる」。「ちょっとそこの机げといて」</div>
+        <div class="tip-item"><strong>わや</strong>意味：「めちゃくちゃ」「台無し」。「雨で髪の毛がわやじゃ〜」</div>
+        <div class="tip-item"><strong>いなげな</strong>意味：「変な」「おかしな」。「いなげなこと言わんで」</div>
+        <div class="tip-item"><strong>しわい</strong>意味：「（肉などが）硬い」「しんどい」「ケチだ」。「このお肉、ちょっとしわいね」</div>
+        <div class="tip-item"><strong>さし</strong>意味：「定規」「物差し」。「そこのさし取ってー」</div>
+        <div class="tip-item"><strong>つばえる</strong>意味：「はしゃぐ」「ふざける」。「子どもが外でつばえとる」</div>
+        <div class="tip-item"><strong>ほいじゃが</strong>意味：「そうだけれども」。「ほいじゃが、それは違うじゃろ」</div>
+        <div class="tip-item"><strong>〜してごらん</strong>意味：「〜しなさい」（命令形だが柔らかい）。「はよ寝てごらん（早く寝なさい）」</div>
+        <div class="tip-item"><strong>ようけ / えっと</strong>意味：「たくさん」。「ようけ人がおるね」「えっと食べてね」</div>
+        <div class="tip-item"><strong>〜ちょる / 〜とる</strong>意味：「〜している」。「知っちょる（知っている）」「食べとる（食べている）」</div>
+        <div class="tip-item"><strong>ごんぼほる</strong>意味：「だだをこねる」。「スーパーで子どもがごんぼほっとる」</div>
+    </div>
+</div>
+
+<div class="section" id="sec-transport">
+    <div class="card">
+        <div class="card-title">🚇 交通手段の基本情報 <a href="https://www.hiroden.co.jp/" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[広島電鉄WEB]</a></div>
+        <div class="tip-item">
+            <strong>🚃 広電（路面電車・市電）</strong> <a href="https://www.hiroden.co.jp/" target="_blank">[広電公式]</a> <a href="https://www.google.com/maps/search/?api=1&query=広島電鉄+電停" target="_blank">[Map]</a><br>
+            広島市内の大動脈！「広電（ひろでん）」と呼ばれ、1日乗車券を使えば主要な場所はどこでも行けるけえ。乗る時は中扉から、降りる時は前扉から。ICカード（PASPYやSuica等）が便利じゃ。
+        </div>
+        <div class="tip-item">
+            <strong>🚆 アストラムライン＆JR</strong> <a href="https://www.astramline.co.jp/" target="_blank">[アストラムWEB]</a> <a href="https://www.jr-odekake.net/" target="_blank">[JRおでかけネット]</a><br>
+            本通から広島広域公園までを結ぶ新交通システム（アストラムライン）は、市北西部への出張に便利。JR（山陽本線・呉線・可部線）は宮島や呉、西条（酒蔵）方面への移動に必須じゃね。
+        </div>
+        <div class="tip-item">
+            <strong>🚌 バスの種類が多いんよ</strong> <a href="https://www.hirobus.co.jp/" target="_blank">[広島バス]</a> <a href="https://www.hiroko-group.co.jp/kotsu/" target="_blank">[広島交通]</a><br>
+            広島バス（赤バス）、広電バス（緑バス）、広島交通など、バス会社がいっぱいあって路線が複雑じゃけえ、Googleマップや「Yahoo!乗換案内」での経路検索が必須よ。
+        </div>
+        <div class="tip-item">
+            <strong>🚢 フェリー（宮島・呉・松山）</strong> <a href="https://jr-miyajimaferry.co.jp/" target="_blank">[JR西日本宮島フェリー]</a> <a href="https://setonaikaikisen.co.jp/" target="_blank">[瀬戸内海汽船]</a><br>
+            宮島へはJR西日本宮島フェリーか宮島松大汽船で10分。広島港（宇品）からは江田島や四国（松山）へ向かうフェリーやスーパージェットが出とるよ。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🚗 自動車（レンタル・購入・ルール） <a href="https://www.pref.hiroshima.lg.jp/site/police/" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[広島県警WEB]</a></div>
+        <div class="tip-item">
+            <strong>🚘 レンタカー・カーシェア事情</strong> <a href="https://share.timescar.jp/" target="_blank">[タイムズカー]</a> <a href="https://rent.toyota.co.jp/" target="_blank">[トヨタレンタカー]</a><br>
+            広島はマツダのお膝元じゃけえ、「タイムズカー」や「トヨタレンタカー」の店舗が駅前に集中しとる。カーシェアのステーションも街中にぶち多いけえ、ちょっとした外出に便利よ。
+        </div>
+        <div class="tip-item">
+            <strong>🛣️ 運転のローカルルール（要注意！）</strong> <a href="https://www.pref.hiroshima.lg.jp/site/police/" target="_blank">[交通ルール]</a><br>
+            路面電車と並走する道（特に右折時）は、<strong>電車優先</strong>が絶対ルール！軌道内を通行できる場所とできない場所があるけえ、慣れるまではヒヤヒヤするんよ。
+        </div>
+        <div class="tip-item">
+            <strong>🚙 自動車の購入・ディーラー</strong> <a href="https://www.hiromaz.co.jp/" target="_blank">[広島マツダ]</a> <a href="https://www.google.com/maps/search/?api=1&query=広島+自動車ディーラー" target="_blank">[Map検索]</a><br>
+            広島県民のマイカー率は高く、マツダ車に乗っとる人の割合が全国トップクラスじゃ！国道2号線沿いなどに大型中古車店や各社ディーラーがずらりと並んどるよ。
+        </div>
+        <div class="tip-item">
+            <strong>🅿️ 駐車場の相場</strong> <a href="https://times-info.net/" target="_blank">[タイムズ駐車場検索]</a> <a href="https://www.google.com/maps/search/?api=1&query=広島市+月極駐車場" target="_blank">[Map検索]</a><br>
+            中区の繁華街（紙屋町・八丁堀）周辺の月極駐車場は2万〜4万円前後と高め。少し郊外に出ると1万円台になるけえ、車を持つなら住むエリア選びが重要じゃ。
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">🚲 自転車（レンタル・購入・活用） <a href="https://www.city.hiroshima.lg.jp/site/bicycle/" target="_blank" style="font-size:0.7rem; color:var(--gold); margin-left:auto; font-weight:normal; text-decoration:none;">[広島市自転車WEB]</a></div>
+        <div class="tip-item">
+            <strong>🚲 広島市内は自転車天国！</strong> <a href="https://www.city.hiroshima.lg.jp/site/bicycle/" target="_blank">[自転車都市づくり]</a><br>
+            広島市内中心部は三角州でできとるけえ、坂道がほとんどなくて平坦なんよ。だもんで、通勤・通学・買い物は自転車が最強のモビリティじゃ！
+        </div>
+        <div class="tip-item">
+            <strong>📱 シェアサイクル「ぴーすくる」</strong> <a href="https://docomo-cycle.jp/hiroshima/" target="_blank">[ぴーすくる公式]</a> <a href="https://www.google.com/maps/search/?api=1&query=ぴーすくる+ポート" target="_blank">[Map検索]</a><br>
+            赤い電動アシスト自転車が街の至る所にある「ぴーすくる」。30分165円でサクッと乗れるけえ、平和公園からマツダスタジアムへの移動など観光・ビジネス両方にぶち便利！
+        </div>
+        <div class="tip-item">
+            <strong>🚴 しまなみ海道サイクリング</strong> <a href="https://shimanami-cycle.or.jp/" target="_blank">[しまなみ海道観光情報]</a> <a href="https://www.google.com/maps/search/?api=1&query=尾道+レンタサイクル" target="_blank">[Map検索]</a><br>
+            尾道から愛媛県の今治まで、島々を橋で渡る世界的なサイクリングロード。尾道駅周辺で本格的なクロスバイクやロードバイクがレンタルできるけえ、休日のアクティビティに最高じゃ。
+        </div>
+        <div class="tip-item">
+            <strong>🔧 自転車の購入と駐輪場</strong> <a href="https://www.cb-asahi.co.jp/" target="_blank">[サイクルベースあさひ]</a> <a href="https://www.google.com/maps/search/?api=1&query=シャレオ地下駐輪場" target="_blank">[地下駐輪場Map]</a><br>
+            市内には大型店からスポーツバイク専門店まで豊富にあるんよ。ただし、市街地（本通周辺など）は駐輪禁止エリアが厳しいけえ、シャレオなどの<strong>地下駐輪場</strong>を利用してね。
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-tips">
+    <div class="card">
+        <div class="card-title">📋 知っておきたい！広島のローカル常識</div>
+        
+        <div class="tip-item">
+            <strong>⚾ カープは宗教、いや生活の一部じゃ</strong> <a href="https://www.carp.co.jp/" target="_blank">[広島東洋カープ公式]</a><br>
+            タクシーに乗ればカープ中継、スーパーに行けばカープの応援歌。試合結果で翌日の職場のご機嫌が変わるくらいじゃけえ。他球団（特に巨人）のファンでも、広島では心の中で応援してね。
+        </div>
+        <div class="tip-item">
+            <strong>🙅‍♀️ 「広島焼き」という言葉はNGワード</strong> <a href="https://www.okonomi.co.jp/" target="_blank">[みっちゃん総本店]</a><br>
+            お好み焼きのことは「お好み焼き」と呼ぶんよ。「広島焼き」と言うと、悪気はなくても機嫌を損ねる人がおるけえ気をつけてね。
+        </div>
+        <div class="tip-item">
+            <strong>🚇 地下街「シャレオ（Shareo）」を活用するんよ</strong> <a href="https://www.shareo.net/" target="_blank">[紙屋町シャレオ]</a><br>
+            紙屋町交差点の地下に広がる十字の地下街。夏の日差しや冬の冷たい風を避けられるし、路面電車の電停やアストラムラインの駅に直結しとるけえ便利じゃ。
+        </div>
+        <div class="tip-item">
+            <strong>🛍️ 「ekie（エキエ）」が手土産の最強スポット</strong> <a href="https://www.ekie.jp/" target="_blank">[ekie公式]</a> <a href="https://nisikido.co.jp/" target="_blank">[にしき堂]</a><br>
+            広島駅に併設されたekieには、もみじ饅頭の名店や、ご当地グルメが集結しとる。出張帰りのギリギリにお土産と弁当を買うならここ一択！
+        </div>
+        <div class="tip-item">
+            <strong>🌿 100m道路（平和大通り）</strong> <a href="https://www.dreamination.com/" target="_blank">[ひろしまドリミネーション]</a><br>
+            幅が100mある大きな通り。春には大規模なお祭り「ひろしまフラワーフェスティバル」のメイン会場になり、冬には「ひろしまドリミネーション」でキラキラにライトアップされるんよ。
+        </div>
+        <div class="tip-item">
+            <strong>☀️ 瀬戸内海式気候じゃけえ、晴れが多いんよ</strong> <a href="https://www.jma-net.go.jp/hiroshima/" target="_blank">[広島地方気象台]</a><br>
+            年間を通じて降水量が少なく晴れの日が多いけえ、生活しやすいんよ。でも、梅雨末期の豪雨や台風の時は、川が多い地形柄、防災情報にしっかり注意してね。
+        </div>
+        <div class="tip-item">
+            <strong>🏢 紙屋町・八丁堀がビジネスと買い物の中心</strong> <a href="https://www.fukuya-dept.co.jp/" target="_blank">[福屋]</a> <a href="https://www.sogo-seibu.jp/hiroshima/" target="_blank">[そごう広島店]</a><br>
+            広島駅から少し離れた「紙屋町」と「八丁堀」エリアが中心地。デパートやオフィスビルが密集しとるんよ。
+        </div>
+        <div class="tip-item">
+            <strong>🌉 太田川のデルタ（三角州）で橋がぶち多い</strong> <a href="https://www.city.hiroshima.lg.jp/" target="_blank">[広島市公式]</a><br>
+            川が6本流れる「水の都」。風景は綺麗じゃけど、橋を渡るルートを通勤経路にすると、朝夕の渋滞にはまりやすいけえ気をつけてね。
+        </div>
+        <div class="tip-item">
+            <strong>🚶 エスカレーターは「左立ち」が多いね</strong><br>
+            東京と同じで左側に立ち、右側を空ける人が多いんよ。でも安全のために「歩かず立ち止まって乗る」のが推奨されとるけえね。
+        </div>
+        <div class="tip-item">
+            <strong>🍷 同窓会や大規模な集まりの定番会場</strong> <a href="https://www.hgh.co.jp/" target="_blank">[ホテルグランヴィア広島]</a> <a href="https://www.rihga.co.jp/hiroshima" target="_blank">[リーガロイヤルホテル広島]</a><br>
+            駅直結や県庁前のホテルは、交通アクセスが抜群で、ビジネスの宴会や同窓会の定番じゃけえ、幹事さんには心強いね。
+        </div>
+        <div class="tip-item">
+            <strong>🛒 「ゆめタウン」と「フジグラン」</strong> <a href="https://www.izumi.jp/" target="_blank">[ゆめタウン]</a> <a href="https://www.the-fuji.com/" target="_blank">[フジグラン]</a><br>
+            休日の買い出しはイオンモールも良いけど、地元企業の「ゆめタウン（イズミ）」や「フジグラン」が県民の生活を支えとるんよ。
+        </div>
+        <div class="tip-item">
+            <strong>🍺 飲み屋の閉まる時間は少し早いかも</strong> <a href="https://dive-hiroshima.com/" target="_blank">[広島観光公式]</a><br>
+            流川・薬研堀は中四国最大の歓楽街！でも、路面電車の終電が早い（23時台）のもあって、普通の居酒屋は思いのほか早く閉まるけえ、計画的に飲んでね。
+        </div>
+    </div>
+</div>
+
+<div class="section" id="sec-sales">
+    <div class="card">
+        <div class="card-title">🚗 広島営業道（町工場巡り編）</div>
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:16px;">
+            東京海洋大（生物資源）院卒・埼玉出身の理系女子が、金属加工部品専門商社の新人として広島の町工場を車でゴリゴリ営業して回るための、超実践的20の教えじゃ！
+        </div>
+
+        <div class="tip-item">
+            <strong>1. ナビ設定の罠に気をつけて</strong> <a href="https://carnavi.yahoo.co.jp/" target="_blank">[Yahoo!カーナビ]</a><br>
+            西区・観音エリアや府中町などの町工場密集地は、一方通行や極細の路地だらけ。Googleマップの裏道案内を信じると痛い目を見るけえ、車専用ナビアプリ推奨じゃ。
+        </div>
+        <div class="tip-item">
+            <strong>2. マツダ城下町（府中町・向洋）の洗礼</strong> <a href="https://www.mazda.co.jp/" target="_blank">[マツダ公式サイト]</a><br>
+            マツダ本社工場周辺の協力工場を回る時は、通勤・退勤ラッシュ時の信じられん大渋滞に注意。アポイントの時間は余裕を持ってね。
+        </div>
+        <div class="tip-item">
+            <strong>3. 埼玉との運転マナーの違い</strong> <a href="https://jaf.or.jp/common/local/chugoku/hiroshima" target="_blank">[JAF 広島]</a><br>
+            埼玉の広いバイパスに慣れとると、安佐南区や廿日市市の山がちな極細道で心が折れるかも。譲り合いの精神と、すれ違い技術が営業車の命じゃ。
+        </div>
+        <div class="tip-item">
+            <strong>4. 海洋大のバックグラウンドを武器にする</strong> <a href="https://www.nikkan.co.jp/" target="_blank">[日刊工業新聞]</a><br>
+            「生物資源の研究？なんで金属商社に？」というツッコミは最大のチャンス。防錆処理や環境対応素材など、生物環境視点からのアプローチは職人社長の興味を惹く雑談ネタになるんよ。
+        </div>
+        <div class="tip-item">
+            <strong>5. 広島の社長は情に厚いけえ</strong> <a href="https://www.hiroshima.doyu.jp/" target="_blank">[広島県中小企業家同友会]</a><br>
+            職人気質で最初は怖く見えるけど、懐に入るとぶち優しい。標準語（埼玉弁）でツンとするより、理系女子らしく「現場の技術、教えてください！」と素直に飛び込むのが吉。
+        </div>
+        <div class="tip-item">
+            <strong>6. 初回訪問の「埼玉手土産」作戦</strong> <a href="https://www.jumangoku.co.jp/" target="_blank">[十万石ふくさや]</a><br>
+            もみじ饅頭に飽きている社長たちに、「埼玉銘菓の十万石まんじゅうです（または草加煎餅）」と渡すと話題になる。「風が語りかけます」のCMネタは広島では通じないけえ、自分で解説してね笑。
+        </div>
+        <div class="tip-item">
+            <strong>7. 路面電車との並走バトル</strong> <a href="https://www.pref.hiroshima.lg.jp/site/police/" target="_blank">[広島県警 交通ルール]</a><br>
+            営業車で市内中心部を抜ける際、右折時の軌道敷内進入ルールでパニックにならんように。電車優先の鉄則を叩き込んどいて。
+        </div>
+        <div class="tip-item">
+            <strong>8. 営業車のラジオは「RCC」一択</strong> <a href="https://radio.rcc.jp/" target="_blank">[RCCラジオ]</a><br>
+            中国放送（RCC）のカープ情報番組をBGMにしておけば、工場に到着した時の「昨日のカープ、勝ったねぇ！」の挨拶が自然に出る。最高の営業アイスブレイクじゃ。
+        </div>
+        <div class="tip-item">
+            <strong>9. ランチ難民を防ぐ「ちから」</strong> <a href="https://www.chikara.jp/" target="_blank">[ちから公式]</a><br>
+            郊外の営業中、時間を節約しつつ美味しいものを食べるなら、駐車場付きのうどんチェーン「ちから」が最強。ダシが効いてて心に染みるんよ。
+        </div>
+        <div class="tip-item">
+            <strong>10. 呉方面（国道31号）の罠</strong> <a href="https://www.roadnavi.pref.hiroshima.lg.jp/" target="_blank">[ひろしま道路ナビ]</a><br>
+            海沿いで景色は最高じゃけど、完全な一本道。事故が起きると大渋滞で抜け道がないけえ、呉の工場へのアポは時間にかなり余裕を持たせてね。
+        </div>
+        <div class="tip-item">
+            <strong>11. 西条（東広島）方面は別世界</strong> <a href="https://www.jartic.or.jp/" target="_blank">[日本道路交通情報センター]</a><br>
+            精密加工の工場が多い西条エリア。市内は晴れてても、標高が高い西条は冬に雪が降ったり路面凍結したりする。冬場のスタッドレスタイヤは必須装備じゃ！
+        </div>
+        <div class="tip-item">
+            <strong>12. 「広島弁 ＋ 金属加工用語」のヒアリング</strong> <a href="https://www.jsme.or.jp/" target="_blank">[日本機械学会]</a><br>
+            「このバリ取っといて」「寸法がたわん（届かない）」「はぶてとる（機械の調子が悪い）」など、専門用語と方言のミックスをいち早く解読するんよ。
+        </div>
+        <div class="tip-item">
+            <strong>13. 清潔なトイレ休憩スポットの把握</strong> <a href="https://www.michi-no-eki.jp/" target="_blank">[道の駅公式]</a><br>
+            昔ながらの町工場は女性用トイレが使いづらいことも。ルート上の大型スーパー（ゆめタウン等）や、綺麗な「道の駅（西条のん太の酒蔵など）」の場所を頭に入れとくのは営業女子の鉄則じゃ。
+        </div>
+        <div class="tip-item">
+            <strong>14. 現場用の安全靴はおしゃれに</strong> <a href="https://www.workman.co.jp/" target="_blank">[ワークマン]</a><br>
+            工場内に立ち入るためのヘルメットと安全靴。最近はワークマン女子でおしゃれで機能的なものが揃うけえ、営業車に常に積んでおくこと。
+        </div>
+        <div class="tip-item">
+            <strong>15. 橋の渋滞を避けるルート組み</strong> <a href="https://www.h-shigai-kousya.or.jp/" target="_blank">[広島道路公社]</a><br>
+            朝夕の太田川放水路や新己斐橋などの大渋滞ポイントは、アポ時間に直結する。川の多い広島ならではの「橋渋滞」を計算してルートを組んでね。
+        </div>
+        <div class="tip-item">
+            <strong>16. 商社としての付加価値提案</strong> <a href="https://www.pref.hiroshima.lg.jp/site/sdgs/" target="_blank">[SDGsネットワークひろしま]</a><br>
+            単なる部品の御用聞きではなく、東京の最新技術動向や、海洋大で学んだSDGs・環境負荷低減の視点（水溶性切削油の提案など）を町工場に持ち込むと、「おっ、こいつ違うな」と思わせられるよ。
+        </div>
+        <div class="tip-item">
+            <strong>17. 工場街のコインパーキング探し</strong> <a href="https://www.akippa.com/" target="_blank">[akippa]</a><br>
+            来客用駐車場がない町工場もある。路駐は絶対NGじゃけえ、タイムズアプリやakippaで事前に駐車場を確保しておくのがスマートな営業マンじゃ。
+        </div>
+        <div class="tip-item">
+            <strong>18. 海風でリフレッシュ</strong> <a href="https://www.marinahop.com/" target="_blank">[広島マリーナホップ]</a><br>
+            慣れない道と営業の連続で疲れたら、宇品やマリーナホップなど海沿いに車を停めて一息。海洋大出身の血が騒ぐ潮風で、メンタルを回復させるんよ。
+        </div>
+        <div class="tip-item">
+            <strong>19. 地元経済ニュースでマウントを取る</strong> <a href="https://www.hirogin-hd.co.jp/" target="_blank">[ひろぎんホールディングス]</a><br>
+            「もみじ銀行」や「広島銀行」の動向、地元製造業のM&A情報など、中国新聞の経済面を読み込んでおくと、社長との会話の深みが一気に増すけえ。
+        </div>
+        <div class="tip-item">
+            <strong>20. 結局一番大事なのは「元気な挨拶」</strong> <a href="https://www.smrj.go.jp/regional_hq/chugoku/" target="_blank">[中小企業基盤整備機構 広島]</a><br>
+            工場内は機械の音がうるさい。現場の職人さんたちには、理系女子だろうが新人だろうが、腹の底から大きめの声で挨拶！これがすべての信頼構築の第一歩じゃけえ、頑張りや！
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div style="font-weight: 700; margin-bottom: 6px;">Hiroshima Life & Business Guide</div>
+    <p>日々の業務とプライベートが、ぶち充実しますように🕊️</p>
+</footer>
+
+<script>
+// ===== DATE/TIME =====
+function updateDateTime() {
+    const now = new Date();
+    const days = ['日','月','火','水','木','金','土'];
+    const d = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日(${days[now.getDay()]})`;
+    const t = now.toTimeString().slice(0,5);
+    document.getElementById('dt').textContent = `${d} ${t}`;
+}
+updateDateTime();
+setInterval(updateDateTime, 10000);
+
+// ===== TAB NAVIGATION =====
+function switchTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    
+    const tabs = ['home','map','food','diary','calc','phrase','transport','tips', 'sales'];
+    const idx = tabs.indexOf(id);
+    if (idx >= 0) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+// ===== MAP & ROUTE =====
+function routeTo(inputId) {
+    const dest = document.getElementById(inputId).value.trim();
+    if (!dest) { alert('行き先を入力してちょうだいね'); return; }
+    window.open('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest), '_blank');
+}
+
+function initMap() {
+    const statusEl = document.getElementById('map-status');
+    const frameEl = document.getElementById('map-frame');
+    
+    if (!navigator.geolocation) { statusEl.textContent = '❌ このブラウザはGPSに対応しとらんみたいじゃわ'; return; }
+    statusEl.textContent = '⏳ 現在地を取得しとるけえ...ちょっと待っとってね';
+    
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            frameEl.src = 'https://maps.google.co.jp/maps?q=' + lat + ',' + lng + '&z=15&output=embed';
+            statusEl.textContent = '✅ 現在地取得に成功したよ！周辺マップを表示しとるけえ';
+        },
+        (err) => {
+            frameEl.src = 'https://maps.google.co.jp/maps?q=広島駅&output=embed';
+            statusEl.textContent = '❌ 位置情報が取得できんかったけえ、広島駅周辺を表示しとくね';
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+    );
+}
+
+function searchNearby(kw) {
+    window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(kw + ' 近く'), '_blank');
+}
+
+// ===== TOURIST SPOT MAP SEARCH =====
+function openMapSpot(spotName) {
+    window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(spotName), '_blank');
+}
+
+function routeToSpot(spotName) {
+    window.open('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(spotName), '_blank');
+}
+
+// ===== FOOD MAP SEARCH =====
+function searchFoodMap(foodName, searchType) {
+    let query = '';
+    if (searchType === 'current') {
+        query = foodName + ' 近く';
+    } else if (searchType === 'hiroshima') {
+        query = '広島県 広島駅周辺 ' + foodName;
+    } else {
+        query = foodName;
+    }
+    window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(query), '_blank');
+}
+
+// ===== WEATHER (Hiroshima) =====
+async function loadWeather() {
+    try {
+        const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=34.3853&longitude=132.4553&current=temperature_2m,weathercode,windspeed_10m,relative_humidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&forecast_days=3`);
+        const d = await r.json();
+        
+        const wmap = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️' };
+        const wdesc = { 0:'快晴じゃ',1:'晴れじゃ',2:'一部曇りじゃね',3:'曇りじゃ',45:'霧じゃね',48:'霧じゃ',51:'小雨じゃ',53:'雨じゃね',55:'ぶち強い雨じゃけえ気をつけて',61:'小雨じゃ',63:'雨じゃ',65:'ぶち強い雨じゃ',71:'小雪じゃ',73:'雪じゃ',75:'大雪じゃけえ',80:'にわか雨じゃね',81:'雨じゃ',82:'激しい雨じゃ',95:'雷雨じゃ',96:'雷雨じゃ',99:'激しい雷雨じゃけえ本当に気をつけてね' };
+        
+        const cur = d.current;
+        const code = cur.weathercode;
+        const icon = wmap[code] || '🌡️';
+        const desc = wdesc[code] || '';
+        
+        document.getElementById('weather-content').innerHTML = `
+            <div style="display:flex; align-items:center; gap:16px; padding:10px 0;">
+                <div style="font-size:3rem;">${icon}</div>
+                <div>
+                    <div style="font-size:2rem; font-weight:300; color:var(--navy);">${Math.round(cur.temperature_2m)}°C</div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">${desc} ・ 湿度 ${cur.relative_humidity_2m}%</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">今日の最高 ${Math.round(d.daily.temperature_2m_max[0])}° / 最低 ${Math.round(d.daily.temperature_2m_min[0])}°じゃ</div>
+                </div>
+            </div>`;
+    } catch(e) {
+        document.getElementById('weather-content').innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:0.85rem;">天気情報を取得できんかったわ💦<br><a href="https://weather.yahoo.co.jp/weather/34/6710.html" target="_blank" style="color:var(--navy);">▶ Yahoo!天気で確認してね</a></div>`;
+    }
+}
+loadWeather();
+
+// ===== CALCULATORS =====
+function calcSplit() {
+    const total = parseFloat(document.getElementById('split-total').value) || 0;
+    const people = parseFloat(document.getElementById('split-people').value) || 1;
+    const res = Math.ceil((total / people) / 100) * 100; // 100円単位切り上げ
+    document.getElementById('split-result').textContent = res.toLocaleString();
+}
+
+function calcTax() {
+    const base = parseFloat(document.getElementById('tax-base').value) || 0;
+    const rate = parseFloat(document.querySelector('input[name="tax-rate"]:checked').value);
+    document.getElementById('tax-result').textContent = Math.floor(base * rate).toLocaleString();
+}
+
+function calcFuel() {
+    const dist = parseFloat(document.getElementById('fuel-dist').value) || 0;
+    const eff = parseFloat(document.getElementById('fuel-eff').value) || 1;
+    const price = parseFloat(document.getElementById('fuel-price').value) || 0;
+    const res = Math.floor((dist / eff) * price);
+    document.getElementById('fuel-result').textContent = res.toLocaleString();
+}
+
+// ===== AI DIARY =====
+async function submitToAI() {
+    const good = document.getElementById('ai-good-input').value.trim();
+    const bad = document.getElementById('ai-bad-input').value.trim();
+    const btn = document.getElementById('ai-submit-btn');
+    const resArea = document.getElementById('ai-response-area');
+    const resText = document.getElementById('ai-response-text');
+
+    if (!good && !bad) {
+        alert('よかったこと、またはもやもやしたことを入力してちょうだいね！');
+        return;
+    }
+
+    btn.textContent = '⏳ AIが一生懸命考えとるけえ...';
+    btn.disabled = true;
+    resArea.style.display = 'none';
+
+    const now = new Date();
+    const dateString = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日`;
+
+    const gasUrl = 'https://script.google.com/macros/s/AKfycbxT2T8HcLaGMSnaKzwR0AbtXu1QD6tZ5e638EHaQwI5zW4nrgTsYTW_QaJFhyoyvg/exec'; 
+
+    const prompt = `あなたは多忙なビジネスパーソンを優しくサポートする優秀な秘書AIです。以下のユーザーの今日の「よかったこと」と「悪かったこと」を分析し、明日への活力となるような労いと論理的なフィードバックを2〜3文程度で返してください。トーンは丁寧で温かみがあり、語尾や表現に「自然で上品な広島弁（〜じゃけえ、〜じゃね、〜よ、など）」を使ってください。極端な任侠言葉や不自然な方言は避けてください。
+【今日の日付】${dateString}
+【よかったこと】
+${good}
+【悪かったこと】
+${bad}`;
+
+    try {
+        const response = await fetch(gasUrl, {
+            method: 'POST',
+            body: JSON.stringify({ prompt: prompt })
+        });
+        
+        const data = await response.json();
+        resText.innerHTML = data.message.replace(/\n/g, '<br>');
+        resArea.style.display = 'block';
+    } catch (error) {
+        resText.innerHTML = '通信エラーが起きちゃったみたいじゃね。ネットワーク環境を確認するか、GASの設定を見直してみてちょうだい。';
+        resArea.style.display = 'block';
+    } finally {
+        btn.textContent = '送信してAIからお返事をもらう💌';
+        btn.disabled = false;
+    }
+}
+
+// ===== TODO LIST =====
+let todos = JSON.parse(localStorage.getItem('hiroshima_todos')) || [];
+
+function renderTodos() {
+    const list = document.getElementById('todo-list');
+    list.innerHTML = '';
+    if (todos.length === 0) {
+        list.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:10px;">タスクはまだないけえ、追加してみてね</div>';
+        return;
+    }
+    todos.forEach((t, i) => {
+        const div = document.createElement('div');
+        div.className = `todo-item ${t.completed ? 'completed' : ''}`;
+        
+        const dateStr = t.date ? `<span style="font-size:0.75rem; color:var(--miso); margin-right:8px; font-weight:600;">[${t.date}]</span>` : '';
+        
+        div.innerHTML = `
+            <input type="checkbox" style="width:16px;height:16px; cursor:pointer;" ${t.completed ? 'checked' : ''} onchange="toggleTodo(${i})">
+            ${dateStr}
+            <span class="task-text" style="flex:1;">${escapeHTML(t.text)}</span>
+            <div class="todo-actions">
+                <button class="todo-btn" onclick="editTodo(${i})" title="編集">✏️</button>
+                <button class="todo-btn" onclick="deleteTodo(${i})" title="削除">🗑️</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+    localStorage.setItem('hiroshima_todos', JSON.stringify(todos));
+}
+
+function addTodo() {
+    const input = document.getElementById('todo-input');
+    const dateInput = document.getElementById('todo-date');
+    const text = input.value.trim();
+    if(!text) { alert('タスクを入力してちょうだいね'); return; }
+    todos.push({ text: text, date: dateInput.value, completed: false });
+    input.value = '';
+    dateInput.value = '';
+    renderTodos();
+}
+
+function toggleTodo(index) {
+    todos[index].completed = !todos[index].completed;
+    renderTodos();
+}
+
+function deleteTodo(index) {
+    if(confirm('このタスクを削除してもええ？')) {
+        todos.splice(index, 1);
+        renderTodos();
+    }
+}
+
+function editTodo(index) {
+    const newText = prompt('タスクを編集してね:', todos[index].text);
+    if(newText !== null && newText.trim() !== '') {
+        const newDate = prompt('期日を編集してね (YYYY-MM-DD):', todos[index].date || '');
+        todos[index].text = newText.trim();
+        todos[index].date = newDate || '';
+        renderTodos();
+    }
+}
+
+function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag]));
+}
+
+// 初期描画
+renderTodos();
+</script>
+</body>
+</html>
